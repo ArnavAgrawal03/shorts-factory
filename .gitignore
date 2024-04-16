@@ -1,0 +1,5 @@
+.env
+facts.json
+.venv
+voiceovers/*
+images/*
