@@ -1,7 +1,1 @@
-random_items = [
-    "firefighters",
-    "bicycles",
-    "dolphins",
-    "telescopes",
-    "alarm clocks"
-]
+random_items = ["firefighters", "bicycles", "dolphins", "telescopes", "alarm clocks"]

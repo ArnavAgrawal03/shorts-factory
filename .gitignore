@@ -3,3 +3,5 @@ facts.json
 .venv
 voiceovers/*
 images/*
+__pycache__/*
+videos/*
