@@ -22,7 +22,8 @@ def create_videos(metadata):
                 image = Image.open(image_path)
                 height = image.size[1]
                 width = height * 9 / 16
-                image = image.crop((0, 0, width, height)).resize(
+                center = image.size[0]//2
+                image = image.crop((center - width//2 , 0, center + width//2, height)).resize(
                     (1080, 1920), Image.LANCZOS
                 )
                 list_of_images.append(image)
