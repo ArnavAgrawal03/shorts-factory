@@ -1,7 +1,10 @@
 .env
 facts.json
 .venv
-voiceovers/*
-images/*
-__pycache__/*
-videos/*
+.DS_Store
+__pycache__
+
+voiceovers/*.mp3
+images/*/*
+videos/*.mp4
+music/*.mp3
