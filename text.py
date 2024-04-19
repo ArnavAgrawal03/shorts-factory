@@ -18,7 +18,7 @@ def generate_facts(
             messages=[
                 {
                     "role": "system",
-                    "content": "You are generating voiceover text for youtube shorts, the voiceover must be 20-35 seconds.",
+                    "content": "You are generating voiceover text for youtube shorts, the voiceover must be 20-35 seconds. It must also be sensational in nature",
                 },
                 {"role": "user", "content": prompt},
             ],

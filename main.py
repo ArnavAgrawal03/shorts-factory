@@ -15,10 +15,10 @@ if __name__ == "__main__":
     openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     # things = ["giraffes", "guitars", "pineapples", "dolphins"]
     print("Generating facts")
-    facts = generate_facts(openai_client, random_items, temperature=0.7)
+    facts = generate_facts(openai_client, random_items, temperature=0.8)
 
     print("Creating voiceovers")
-    short_data = create_voiceovers(openai_client, facts)
+    short_data = create_voiceovers(openai_client, facts, voice="onyx")
 
     print("Getting images for video")
     pexels_client = API(os.getenv("PEXELS_API_KEY"))
