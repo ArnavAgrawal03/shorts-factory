@@ -1,5 +1,6 @@
 .env
 facts.json
+fonts.json
 .venv
 .DS_Store
 __pycache__
@@ -8,3 +9,7 @@ voiceovers/*.mp3
 images/*/*
 videos/*.mp4
 music/*.mp3
+
+*.gif
+
+item_list.py
