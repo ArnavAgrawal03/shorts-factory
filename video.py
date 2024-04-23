@@ -61,9 +61,10 @@ def create_videos(metadata):
 
         audio_length, composite_audio = create_audio(audio_path, music_path)
         video = create_slideshow(audio_length, short, images_path)
+        txt_clip = create_subtitle_clips(audio_length, chunk(short["response"])).set_position(("center", 0.7), relative=True)
         # txt_clip = create_captions(subtitles, video.duration)
 
-        # video = editor.CompositeVideoClip([video, txt_clip])
+        video = editor.CompositeVideoClip([video, txt_clip], size=video.size)
 
         final_video = video.set_audio(composite_audio)
         os.chdir(video_path)
@@ -80,24 +81,38 @@ def sensationalize(text):
     return " ".join(new_text)
 
 
-# def chunk(text, char_limit=18):
-#     text, new_text = text.split(), []
-#     line, i, current_chars = [], 0, 0
-#     while i < len(text):
-#         shout = random.choice([True, False, False, False, False, False])
-#         word = text[i].upper() if shout else text[i]
+def chunk(text, char_limit=18):
+    text, new_text = text.split(), []
+    line, i, current_chars = [], 0, 0
+    while i < len(text):
+        shout = random.choice([True, False, False, False, False, False])
+        word = text[i].upper() if shout else text[i]
 
-#         if current_chars + len(word) <= char_limit:
-#             line.append(word)
-#             current_chars += len(word) + 1
-#             i += 1
-#         else:
-#             new_text.append(" ".join(line))
-#             line = []
-#             current_chars = 0
-#     new_text.append(" ".join(line))
-#     return new_text
+        if current_chars + len(word) <= char_limit:
+            line.append(word)
+            current_chars += len(word) + 1
+            i += 1
+        else:
+            new_text.append(" ".join(line))
+            line = []
+            current_chars = 0
+    new_text.append(" ".join(line))
+    return new_text
 
 
-# def create_subtitle_clips(subtitles):
-#     clips = []
+def create_subtitle_clips(audio_length, chunks):
+    time_per_line = audio_length / len(chunks)
+    clips = []
+    for line in chunks:
+        txt_clip = editor.TextClip(
+            line,
+            fontsize=60,
+            color="white",
+            stroke_color="black",
+            stroke_width=4,
+            size=(1080 * 3 / 4, None),
+            bg_color="transparent",
+            font="Arial-Bold"
+        )
+        clips.append(txt_clip.set_position(("center", "bottom")).set_duration(time_per_line))
+    return editor.concatenate_videoclips(clips, method="compose")
