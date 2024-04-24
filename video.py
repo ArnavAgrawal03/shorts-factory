@@ -7,49 +7,6 @@ import os
 import random
 
 
-def create_captions(subtitles, video_length):
-    txt_clip = editor.TextClip(
-        subtitles,
-        fontsize=60,
-        color="white",
-        # stroke_color="black",
-        # stroke_width=1.5,
-        size=(1080 * 3 / 4, None),
-        bg_color="black",
-    )
-    return txt_clip.set_pos(("center", "bottom")).set_duration(video_length)
-
-
-def create_slideshow(audio_length, short, images_path):
-    list_of_images = []
-    for image_file in os.listdir(images_path):
-        if image_file.endswith(".jpeg"):  # image_file.endswith(".png") or
-            image_path = os.path.join(images_path, image_file)
-            image = Image.open(image_path)
-            height = image.size[1]
-            width = height * 9 / 16
-            center = image.size[0] // 2
-            image = image.crop(
-                (center - width // 2, 0, center + width // 2, height)
-            ).resize((1080, 1920), Image.LANCZOS)
-            list_of_images.append(image)
-
-    duration = audio_length / len(list_of_images)
-    imageio.mimsave(f"{short['thing']}.gif", list_of_images, fps=1 / duration)
-    return editor.VideoFileClip(f"{short['thing']}.gif")
-
-
-def create_audio(audio_path, music_path):
-    audio = MP3(audio_path)
-    audio_length = audio.info.length
-
-    audio = editor.AudioFileClip(audio_path).volumex(2)
-    music = editor.AudioFileClip(music_path).subclip(0, audio_length).volumex(0.5)
-    composite_audio = editor.CompositeAudioClip([audio, music])
-
-    return audio_length, composite_audio
-
-
 def create_videos(metadata):
     video_path = str((Path(__file__).parent / "videos").resolve())
     music_path = str((Path(__file__).parent / "music" / "else_paris.mp3").resolve())
@@ -73,12 +30,33 @@ def create_videos(metadata):
         )
 
 
-def sensationalize(text):
-    new_text = []
-    for word in text.split():
-        shout = random.choice([True, False, False, False, False])
-        new_text.append(word.upper() if shout else word)
-    return " ".join(new_text)
+def create_audio(audio_path, music_path):
+    audio = MP3(audio_path)
+    audio_length = audio.info.length
+
+    audio = editor.AudioFileClip(audio_path)
+    music = editor.AudioFileClip(music_path).subclip(0, audio_length).volumex(0.2)
+    composite_audio = editor.CompositeAudioClip([audio, music])
+
+    return audio_length, composite_audio
+
+def create_slideshow(audio_length, short, images_path):
+    list_of_images = []
+    for image_file in os.listdir(images_path):
+        if image_file.endswith(".jpeg"):  # image_file.endswith(".png") or
+            image_path = os.path.join(images_path, image_file)
+            image = Image.open(image_path)
+            height = image.size[1]
+            width = height * 9 / 16
+            center = image.size[0] // 2
+            image = image.crop(
+                (center - width // 2, 0, center + width // 2, height)
+            ).resize((1080, 1920), Image.LANCZOS)
+            list_of_images.append(image)
+
+    duration = audio_length / len(list_of_images)
+    imageio.mimsave(f"{short['thing']}.gif", list_of_images, fps=1 / duration)
+    return editor.VideoFileClip(f"{short['thing']}.gif")
 
 
 def chunk(text, char_limit=18):
@@ -116,3 +94,27 @@ def create_subtitle_clips(audio_length, chunks):
         )
         clips.append(txt_clip.set_position(("center", "bottom")).set_duration(time_per_line))
     return editor.concatenate_videoclips(clips, method="compose")
+
+
+# old functions:
+
+
+# def create_captions(subtitles, video_length):
+#     txt_clip = editor.TextClip(
+#         subtitles,
+#         fontsize=60,
+#         color="white",
+#         # stroke_color="black",
+#         # stroke_width=1.5,
+#         size=(1080 * 3 / 4, None),
+#         bg_color="black",
+#     )
+#     return txt_clip.set_pos(("center", "bottom")).set_duration(video_length)
+
+
+# def sensationalize(text):
+#     new_text = []
+#     for word in text.split():
+#         shout = random.choice([True, False, False, False, False])
+#         new_text.append(word.upper() if shout else word)
+#     return " ".join(new_text)
