@@ -3,7 +3,8 @@ import json
 starter_messages = [
     {
         "role": "system",
-        "content": "You are generating voiceover text for youtube shorts, the voiceover must be 20-35 seconds. It must also be sensational in nature",
+        "content": "You are generating voiceover text for youtube shorts, "
+        + "the voiceover must be 20-35 seconds. It must also be sensational in nature",
     }
 ]
 
@@ -22,13 +23,8 @@ def generate_facts(
         prompt = f"Generate 3 interesting trivia facts about {thing}:\n"
         new_messages = starter_messages.copy()
         new_messages.append({"role": "user", "content": prompt})
-        chat_completion = client.chat.completions.create(
-            model=model, messages=new_messages, temperature=temperature
-        )
-        response = (
-            f"Did you know these 3 unknown facts about {thing}? "
-            + chat_completion.choices[0].message.content
-        )
+        chat_completion = client.chat.completions.create(model=model, messages=new_messages, temperature=temperature)
+        response = f"Did you know these 3 unknown facts about {thing}? " + chat_completion.choices[0].message.content
         fact = {"thing": thing, "prompt": prompt, "response": response}
         facts.append(fact)
 
@@ -53,9 +49,7 @@ def generate_quotes(
         prompt = f"Generate 3 interesting quotes by {person}:\n"
         new_messages = starter_messages.copy()
         new_messages.append({"role": "user", "content": prompt})
-        chat_completion = client.chat.completions.create(
-            model=model, messages=new_messages, temperature=temperature
-        )
+        chat_completion = client.chat.completions.create(model=model, messages=new_messages, temperature=temperature)
         response = (
             f"Did you know {person} once said: "
             + chat_completion.choices[0].message.content

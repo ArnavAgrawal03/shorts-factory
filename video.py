@@ -18,18 +18,16 @@ def create_videos(metadata):
 
         audio_length, composite_audio = create_audio(audio_path, music_path)
         video = create_slideshow(audio_length, short, images_path)
-        txt_clip = create_subtitle_clips(
-            audio_length, chunk(short["response"])
-        ).set_position(("center", 0.7), relative=True)
+        txt_clip = create_subtitle_clips(audio_length, chunk(short["response"])).set_position(
+            ("center", 0.7), relative=True
+        )
         # txt_clip = create_captions(subtitles, video.duration)
 
         video = editor.CompositeVideoClip([video, txt_clip], size=video.size)
 
         final_video = video.set_audio(composite_audio)
         os.chdir(video_path)
-        final_video.write_videofile(
-            fps=60, codec="libx264", filename=f"{short['thing']}.mp4"
-        )
+        final_video.write_videofile(fps=60, codec="libx264", filename=f"{short['thing']}.mp4")
 
 
 def create_audio(audio_path, music_path):
@@ -52,9 +50,9 @@ def create_slideshow(audio_length, short, images_path):
             height = image.size[1]
             width = height * 9 / 16
             center = image.size[0] // 2
-            image = image.crop(
-                (center - width // 2, 0, center + width // 2, height)
-            ).resize((1080, 1920), Image.LANCZOS)
+            image = image.crop((center - width // 2, 0, center + width // 2, height)).resize(
+                (1080, 1920), Image.LANCZOS
+            )
             list_of_images.append(image)
 
     duration = audio_length / len(list_of_images)
@@ -95,9 +93,7 @@ def create_subtitle_clips(audio_length, chunks):
             bg_color="transparent",
             font="Arial-Bold",
         )
-        clips.append(
-            txt_clip.set_position(("center", "bottom")).set_duration(time_per_line)
-        )
+        clips.append(txt_clip.set_position(("center", "bottom")).set_duration(time_per_line))
     return editor.concatenate_videoclips(clips, method="compose")
 
 
