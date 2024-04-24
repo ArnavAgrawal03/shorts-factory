@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import openai
 import os
 from pexels_api import API
-from item_list import random_items
+from item_list import fact_items
 from text import generate_facts
 from voiceover import create_voiceovers
 from image import create_images
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     # things = ["giraffes", "guitars", "pineapples", "dolphins"]
     print("Generating facts")
-    facts = generate_facts(openai_client, random_items, temperature=0.8)
+    facts = generate_facts(openai_client, fact_items, temperature=0.8)
 
     print("Creating voiceovers")
     short_data = create_voiceovers(openai_client, facts, voice="onyx")
