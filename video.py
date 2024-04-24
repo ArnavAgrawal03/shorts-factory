@@ -59,7 +59,7 @@ def create_slideshow(audio_length, short, images_path):
     return editor.VideoFileClip(f"{short['thing']}.gif")
 
 
-def chunk(text, char_limit=18):
+def chunk(text, char_limit=25):
     text, new_text = text.split(), []
     line, i, current_chars = [], 0, 0
     while i < len(text):

@@ -18,7 +18,7 @@ if __name__ == "__main__":
     facts = generate_facts(openai_client, fact_items, temperature=0.8)
 
     print("Generating quotes")
-    quotes = generate_quotes(openai_client, quote_people, temperature=0.3)
+    quotes = generate_quotes(openai_client, quote_people, temperature=0.4)
 
     all_text = facts + quotes
 
