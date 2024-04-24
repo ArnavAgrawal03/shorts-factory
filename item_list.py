@@ -1,4 +1,4 @@
 # random_items = ["balloons", "police officers", "architects", "scientists"]
-fact_items = ["post office"]
+fact_items = ["coffee"]
 
-story_items = []
+quote_people = ["Gandhi", "Nelson Mandela", "Einstein"]
