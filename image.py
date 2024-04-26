@@ -11,6 +11,18 @@ MAX_IMAGES = 12
 BASE_PATH = Path(__file__).parent / "images"
 RESOLUTION = "original"
 
+google_search_params = {
+    "q": "...",
+    "num": 10,
+    "fileType": "jpg|gif|png",
+    "rights": "cc_publicdomain|cc_attribute|cc_sharealike|cc_noncommercial|cc_nonderived",
+    # "safe": "active",
+    # "imgSize": "large",  # 'huge|icon|large|medium|small|xlarge|xxlarge|imgSizeUndefined', ##
+    # 'imgDominantColor': 'black|blue|brown|gray|green|orange|pink|purple|red|teal|white|yellow|imgDominantColorUndefined',
+    # 'imgColorType': 'color|gray|mono|trans|imgColorTypeUndefined' ##
+    # 'imgType': 'clipart|face|lineart|stock|photo|animated|imgTypeUndefined', ##
+}
+
 
 def create_images(pexels_client, google_client, metadata, save=False, filename="shorts.json"):
     for i, short in enumerate(metadata):
@@ -72,20 +84,9 @@ def download_images(thing, photos_dict):
 
 def create_images_google(gis, short):
     path = BASE_PATH / short["thing"]
+    google_search_params["q"] = short["thing"]
 
-    _search_params = {
-        "q": short["thing"],
-        "num": 10,
-        "fileType": "jpg|gif|png",
-        "rights": "cc_publicdomain|cc_attribute|cc_sharealike|cc_noncommercial|cc_nonderived",
-        # "safe": "active",
-        # "imgSize": "large",  # 'huge|icon|large|medium|small|xlarge|xxlarge|imgSizeUndefined', ##
-        # 'imgDominantColor': 'black|blue|brown|gray|green|orange|pink|purple|red|teal|white|yellow|imgDominantColorUndefined', ##
-        # 'imgColorType': 'color|gray|mono|trans|imgColorTypeUndefined' ##
-        # 'imgType': 'clipart|face|lineart|stock|photo|animated|imgTypeUndefined', ##
-    }
-
-    gis.search(search_params=_search_params, path_to_dir=path, width=1080, height=1920)
+    gis.search(search_params=google_search_params, path_to_dir=path, width=1080, height=1920)
     short["image_folder_path"] = path
 
     return short
