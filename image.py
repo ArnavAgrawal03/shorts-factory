@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import json
 
+
 PAGE_LIMIT = 10
 RESULTS_PER_PAGE = 10
 MAX_IMAGES = 12
@@ -11,12 +12,12 @@ BASE_PATH = Path(__file__).parent / "images"
 RESOLUTION = "original"
 
 
-def create_images(pexels_client, metadata, save=False, filename="shorts.json"):
+def create_images(pexels_client, google_client, metadata, save=False, filename="shorts.json"):
     for i, short in enumerate(len(metadata)):
         if short["category"] == "fact":
             metadata[i] = create_images_pexel(pexels_client, short)
         elif short["category"] == "quote":
-            metadata[i] = create_images_google(short)
+            metadata[i] = create_images_google(google_client, short)
 
     if save:
         with open(filename, "w") as fp:
@@ -69,6 +70,24 @@ def download_images(thing, photos_dict):
     return path
 
 
-def create_images_google():
-    # TODO: Implement this function
-    return
+def create_images_google(gis, short):
+    path = BASE_PATH / short["thing"]
+
+    _search_params = {
+    'q': short["thing"],
+    'num': 10,
+    'fileType': 'jpg|gif|png',
+    'rights': 'cc_publicdomain|cc_attribute|cc_sharealike|cc_noncommercial|cc_nonderived',
+    'safe': 'active',
+    'imgSize': 'large', # 'huge|icon|large|medium|small|xlarge|xxlarge|imgSizeUndefined', ##
+    # 'imgDominantColor': 'black|blue|brown|gray|green|orange|pink|purple|red|teal|white|yellow|imgDominantColorUndefined', ##
+    # 'imgColorType': 'color|gray|mono|trans|imgColorTypeUndefined' ##
+    # 'imgType': 'clipart|face|lineart|stock|photo|animated|imgTypeUndefined', ##
+    }
+
+    gis.search(search_params=_search_params, path_to_dir=path)
+    short["image_folder_path"] = path
+    
+    return short 
+    
+    

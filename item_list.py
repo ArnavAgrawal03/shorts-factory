@@ -1,6 +1,6 @@
 # random_items = ["balloons", "police officers", "architects", "scientists"]
 fact_items = [
-    "plasma",
+    # "plasma",
 ]
 
 quote_people = [

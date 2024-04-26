@@ -7,6 +7,8 @@ from text import generate_facts, generate_quotes
 from voiceover import create_voiceovers
 from image import create_images
 from video import create_videos
+from google_images_search import GoogleImagesSearch
+
 
 
 if __name__ == "__main__":
@@ -27,7 +29,8 @@ if __name__ == "__main__":
 
     print("Getting images for fact videos")
     pexels_client = API(os.getenv("PEXELS_API_KEY"))
-    short_data = create_images(pexels_client, short_data)
+    google_client = GoogleImagesSearch(os.getenv("GCS_DEVELOPER_KEY"), os.getenv("GCS_CX"))
+    short_data = create_images(pexels_client, google_client, short_data)
 
     print("Creating videos")
     create_videos(short_data)
