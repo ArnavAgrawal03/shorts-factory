@@ -19,7 +19,7 @@ def create_videos(metadata):
         audio_length, composite_audio = create_audio(audio_path, music_path)
         video = create_slideshow(audio_length, short, images_path)
         txt_clip = create_subtitle_clips(audio_length, chunk(short["response"])).set_position(
-            ("center", 0.7), relative=True
+            ("center", 0.5), relative=True
         )
         # txt_clip = create_captions(subtitles, video.duration)
 
@@ -60,12 +60,13 @@ def create_slideshow(audio_length, short, images_path):
     return editor.VideoFileClip(f"{short['thing']}.gif")
 
 
-def chunk(text, char_limit=25):
+def chunk(text, char_limit=20):
     text, new_text = text.split(), []
     line, i, current_chars = [], 0, 0
     while i < len(text):
-        shout = random.choice([True, False, False, False, False, False])
-        word = text[i].upper() if shout else text[i]
+        # shout = random.choice([True, False, False, False, False, False])
+        # word = text[i].upper() if shout else text[i]
+        word = text[i].upper()
 
         if current_chars + len(word) <= char_limit:
             line.append(word)
@@ -85,15 +86,15 @@ def create_subtitle_clips(audio_length, chunks):
     for line in chunks:
         txt_clip = editor.TextClip(
             line,
-            fontsize=60,
-            color="white",
+            fontsize=75,
+            color=random.choice(["white", "white", "yellow"]),
             stroke_color="black",
             stroke_width=4,
             size=(1080 * 3 / 4, None),
             bg_color="transparent",
             font="Arial-Bold",
         )
-        clips.append(txt_clip.set_position(("center", "bottom")).set_duration(time_per_line))
+        clips.append(txt_clip.set_position(("center", 0.5), relative=True).set_duration(time_per_line))
     return editor.concatenate_videoclips(clips, method="compose")
 
 
