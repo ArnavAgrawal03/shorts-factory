@@ -25,7 +25,7 @@ if __name__ == "__main__":
     print("Creating voiceovers")
     short_data = create_voiceovers(openai_client, all_text, voice="echo")
 
-    print("Getting images for video")
+    print("Getting images for fact videos")
     pexels_client = API(os.getenv("PEXELS_API_KEY"))
     short_data = create_images(pexels_client, short_data)
 

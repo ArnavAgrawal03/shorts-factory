@@ -11,17 +11,27 @@ BASE_PATH = Path(__file__).parent / "images"
 RESOLUTION = "original"
 
 
-def create_images(client, metadata, save=False, filename="shorts.json"):
-    for short in metadata:
-        photos_dict = make_photo_dict(client, short["thing"])
-        image_folder_path = download_images(short["thing"], photos_dict)
-        short["image_folder_path"] = image_folder_path
+def create_images(pexels_client, metadata, save=False, filename="shorts.json"):
+    for i, short in enumerate(len(metadata)):
+        if short["category"] == "fact":
+            metadata[i] = create_images_pexel(pexels_client, short)
+        elif short["category"] == "quote":
+            metadata[i] = create_images_google(short)
 
     if save:
         with open(filename, "w") as fp:
             json.dump(metadata, fp, indent=4)
 
     return metadata
+
+
+def create_images_pexel(client, short):
+    # for short in metadata:
+    photos_dict = make_photo_dict(client, short["thing"])
+    image_folder_path = download_images(short["thing"], photos_dict)
+    short["image_folder_path"] = image_folder_path
+
+    return short
 
 
 def make_photo_dict(api, query):
@@ -57,3 +67,8 @@ def download_images(thing, photos_dict):
             # ignore if already downloaded
             print(f"File {image_path} exists")
     return path
+
+
+def create_images_google():
+    # TODO: Implement this function
+    return

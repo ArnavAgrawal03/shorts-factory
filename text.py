@@ -25,7 +25,7 @@ def generate_facts(
         new_messages.append({"role": "user", "content": prompt})
         chat_completion = client.chat.completions.create(model=model, messages=new_messages, temperature=temperature)
         response = f"Did you know these 3 unknown facts about {thing}? " + chat_completion.choices[0].message.content
-        fact = {"thing": thing, "prompt": prompt, "response": response}
+        fact = {"thing": thing, "prompt": prompt, "response": response, "category": "fact"}
         facts.append(fact)
 
     if save:
@@ -55,7 +55,7 @@ def generate_quotes(
             + chat_completion.choices[0].message.content
             + " subscribe for more quotes and facts!!"
         )
-        quote = {"thing": person, "prompt": prompt, "response": response}
+        quote = {"thing": person, "prompt": prompt, "response": response, "category": "quote"}
         quotes.append(quote)
 
     if save:
