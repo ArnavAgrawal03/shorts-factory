@@ -43,13 +43,16 @@ def create_audio(audio_path, music_path):
 
 def create_slideshow(audio_length, short, images_path):
     list_of_images = []
+    valid_extensions = {".jpeg", ".png", ".jpg"}
     for image_file in os.listdir(images_path):
-        if image_file.endswith(".jpeg"):  # image_file.endswith(".png") or
+        is_image = any(image_file.endswith(ext) for ext in valid_extensions)
+        if is_image:  # image_file.endswith(".png") or
             image_path = os.path.join(images_path, image_file)
             image = Image.open(image_path)
             height = image.size[1]
             width = height * 9 / 16
             center = image.size[0] // 2
+            # if short["category"] == "fact":
             image = image.crop((center - width // 2, 0, center + width // 2, height)).resize(
                 (1080, 1920), Image.LANCZOS
             )

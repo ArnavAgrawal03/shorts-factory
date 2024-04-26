@@ -13,7 +13,7 @@ RESOLUTION = "original"
 
 
 def create_images(pexels_client, google_client, metadata, save=False, filename="shorts.json"):
-    for i, short in enumerate(len(metadata)):
+    for i, short in enumerate(metadata):
         if short["category"] == "fact":
             metadata[i] = create_images_pexel(pexels_client, short)
         elif short["category"] == "quote":
@@ -74,20 +74,18 @@ def create_images_google(gis, short):
     path = BASE_PATH / short["thing"]
 
     _search_params = {
-    'q': short["thing"],
-    'num': 10,
-    'fileType': 'jpg|gif|png',
-    'rights': 'cc_publicdomain|cc_attribute|cc_sharealike|cc_noncommercial|cc_nonderived',
-    'safe': 'active',
-    'imgSize': 'large', # 'huge|icon|large|medium|small|xlarge|xxlarge|imgSizeUndefined', ##
-    # 'imgDominantColor': 'black|blue|brown|gray|green|orange|pink|purple|red|teal|white|yellow|imgDominantColorUndefined', ##
-    # 'imgColorType': 'color|gray|mono|trans|imgColorTypeUndefined' ##
-    # 'imgType': 'clipart|face|lineart|stock|photo|animated|imgTypeUndefined', ##
+        "q": short["thing"],
+        "num": 10,
+        "fileType": "jpg|gif|png",
+        "rights": "cc_publicdomain|cc_attribute|cc_sharealike|cc_noncommercial|cc_nonderived",
+        # "safe": "active",
+        # "imgSize": "large",  # 'huge|icon|large|medium|small|xlarge|xxlarge|imgSizeUndefined', ##
+        # 'imgDominantColor': 'black|blue|brown|gray|green|orange|pink|purple|red|teal|white|yellow|imgDominantColorUndefined', ##
+        # 'imgColorType': 'color|gray|mono|trans|imgColorTypeUndefined' ##
+        # 'imgType': 'clipart|face|lineart|stock|photo|animated|imgTypeUndefined', ##
     }
 
-    gis.search(search_params=_search_params, path_to_dir=path)
+    gis.search(search_params=_search_params, path_to_dir=path, width=1080, height=1920)
     short["image_folder_path"] = path
-    
-    return short 
-    
-    
+
+    return short

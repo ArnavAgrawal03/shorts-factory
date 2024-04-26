@@ -10,7 +10,6 @@ from video import create_videos
 from google_images_search import GoogleImagesSearch
 
 
-
 if __name__ == "__main__":
     load_dotenv()
 
@@ -27,7 +26,7 @@ if __name__ == "__main__":
     print("Creating voiceovers")
     short_data = create_voiceovers(openai_client, all_text, voice="echo")
 
-    print("Getting images for fact videos")
+    print("Getting images for videos")
     pexels_client = API(os.getenv("PEXELS_API_KEY"))
     google_client = GoogleImagesSearch(os.getenv("GCS_DEVELOPER_KEY"), os.getenv("GCS_CX"))
     short_data = create_images(pexels_client, google_client, short_data)

@@ -1,8 +1,7 @@
 # random_items = ["balloons", "police officers", "architects", "scientists"]
 fact_items = [
+    # "aliens"
     # "plasma",
 ]
 
-quote_people = [
-    "Taylor Swift",
-]
+quote_people = ["Einstein", "Mozart", "Garfield"]
