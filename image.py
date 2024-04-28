@@ -29,7 +29,7 @@ def create_images(pexels_client, google_client, metadata, save=False, filename="
         if short["category"] == "fact":
             metadata[i] = create_images_pexel(pexels_client, short)
         elif short["category"] == "quote":
-            metadata[i] = create_images_google(google_client, short)
+            metadata[i]["image_folder_path"] = create_images_google(google_client, short["thing"])
 
     if save:
         with open(filename, "w") as fp:
@@ -82,11 +82,14 @@ def download_images(thing, photos_dict):
     return path
 
 
-def create_images_google(gis, short):
-    path = BASE_PATH / short["thing"]
-    google_search_params["q"] = short["thing"]
+def create_images_google(gis, thing, num_images=10, crop=False):
+    path = BASE_PATH / thing
+    google_search_params["q"] = thing
+    google_search_params["num"] = num_images
 
-    gis.search(search_params=google_search_params, path_to_dir=path, width=1080, height=1920)
-    short["image_folder_path"] = path
+    if crop:
+        gis.search(search_params=google_search_params, path_to_dir=path, width=1080, height=1920)
+    else:
+        gis.search(search_params=google_search_params, path_to_dir=path)
 
-    return short
+    return path

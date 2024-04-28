@@ -9,8 +9,10 @@ from image import create_images
 from video import create_videos
 from google_images_search import GoogleImagesSearch
 
+from short import Short
 
-if __name__ == "__main__":
+
+def main1():
     load_dotenv()
 
     openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -33,3 +35,21 @@ if __name__ == "__main__":
 
     print("Creating videos")
     create_videos(short_data)
+
+
+def main2():
+    shorts = []
+
+    for fact in fact_items:
+        shorts.append(Short(topic=fact, category="fact"))
+
+    for person in quote_people:
+        shorts.append(Short(topic=person, category="quote"))
+
+    for short in shorts:
+        short.generate_short()
+
+
+if __name__ == "__main__":
+    # main1()
+    main2()

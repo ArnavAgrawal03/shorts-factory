@@ -7,27 +7,38 @@ import os
 import random
 
 
+def create_video(voiceover_path, image_folder_path, music_path, text, video_path, topic, height=0.5):
+    audio_path = str(voiceover_path.resolve())
+    images_path = str(image_folder_path.resolve())
+    # subtitles = sensationalize(short["response"])
+
+    audio_length, composite_audio = create_audio(audio_path, music_path)
+    video = create_slideshow(audio_length, topic, images_path)
+    txt_clip = create_subtitle_clips(audio_length, chunk(text)).set_position(("center", height), relative=True)
+    # txt_clip = create_captions(subtitles, video.duration)
+
+    video = editor.CompositeVideoClip([video, txt_clip], size=video.size)
+
+    final_video = video.set_audio(composite_audio)
+    os.chdir(video_path)
+    final_video.write_videofile(fps=60, codec="libx264", filename=f"{topic}.mp4")
+
+    return Path(video_path) / f"{topic}.mp4"
+
+
 def create_videos(metadata):
     video_path = str((Path(__file__).parent / "videos").resolve())
     music_path = str((Path(__file__).parent / "music" / "else_paris.mp3").resolve())
 
     for short in metadata:
-        audio_path = str(short["voiceover_path"].resolve())
-        images_path = str((short["image_folder_path"]).resolve())
-        # subtitles = sensationalize(short["response"])
-
-        audio_length, composite_audio = create_audio(audio_path, music_path)
-        video = create_slideshow(audio_length, short, images_path)
-        txt_clip = create_subtitle_clips(audio_length, chunk(short["response"])).set_position(
-            ("center", 0.5), relative=True
+        create_video(
+            voiceover_path=short["voiceover_path"],
+            image_folder_path=short["image_folder_path"],
+            music_path=music_path,
+            text=short["response"],
+            video_path=video_path,
+            topic=short["thing"],
         )
-        # txt_clip = create_captions(subtitles, video.duration)
-
-        video = editor.CompositeVideoClip([video, txt_clip], size=video.size)
-
-        final_video = video.set_audio(composite_audio)
-        os.chdir(video_path)
-        final_video.write_videofile(fps=60, codec="libx264", filename=f"{short['thing']}.mp4")
 
 
 def create_audio(audio_path, music_path):
@@ -41,7 +52,7 @@ def create_audio(audio_path, music_path):
     return audio_length, composite_audio
 
 
-def create_slideshow(audio_length, short, images_path):
+def create_slideshow(audio_length, thing, images_path):
     list_of_images = []
     valid_extensions = {".jpeg", ".png", ".jpg"}
     for image_file in os.listdir(images_path):
@@ -59,8 +70,8 @@ def create_slideshow(audio_length, short, images_path):
             list_of_images.append(image)
 
     duration = audio_length / len(list_of_images)
-    imageio.mimsave(f"{short['thing']}.gif", list_of_images, fps=1 / duration)
-    return editor.VideoFileClip(f"{short['thing']}.gif")
+    imageio.mimsave(f"{thing}.gif", list_of_images, fps=1 / duration)
+    return editor.VideoFileClip(f"{thing}.gif")
 
 
 def chunk(text, char_limit=20):
