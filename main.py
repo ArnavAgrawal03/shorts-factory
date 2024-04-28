@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import openai
 import os
 from pexels_api import API
-from item_list import fact_items, quote_people
+from item_list import fact_items, quote_people, fiction_books, nonfiction_books
 from text import generate_facts, generate_quotes
 from voiceover import create_voiceovers
 from image import create_images
@@ -46,8 +46,15 @@ def main2():
     for person in quote_people:
         shorts.append(Short(topic=person, category="quote"))
 
+    for book in fiction_books:
+        shorts.append(Short(topic=book, category="fiction_book"))
+
+    for book in nonfiction_books:
+        shorts.append(Short(topic=book, category="nonfiction_book"))
+
     for short in shorts:
-        short.generate_short()
+        print(f"Generating short for {short.topic}")
+        short.generate_short(randomize=True)
 
 
 if __name__ == "__main__":

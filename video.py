@@ -7,14 +7,16 @@ import os
 import random
 
 
-def create_video(voiceover_path, image_folder_path, music_path, text, video_path, topic, height=0.5):
+def create_video(voiceover_path, image_folder_path, music_path, text, video_path, topic, height=0.5, caption_length=20):
     audio_path = str(voiceover_path.resolve())
     images_path = str(image_folder_path.resolve())
     # subtitles = sensationalize(short["response"])
 
     audio_length, composite_audio = create_audio(audio_path, music_path)
     video = create_slideshow(audio_length, topic, images_path)
-    txt_clip = create_subtitle_clips(audio_length, chunk(text)).set_position(("center", height), relative=True)
+    txt_clip = create_subtitle_clips(audio_length, chunk(text, char_limit=caption_length)).set_position(
+        ("center", height), relative=True
+    )
     # txt_clip = create_captions(subtitles, video.duration)
 
     video = editor.CompositeVideoClip([video, txt_clip], size=video.size)
