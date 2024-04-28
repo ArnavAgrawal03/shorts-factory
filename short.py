@@ -4,10 +4,32 @@ from os import getenv
 from openai import OpenAI
 from google_images_search import GoogleImagesSearch
 
-from text import generate_model_response
-from image import create_images_google
-from voiceover import create_voiceover
+# from text import generate_model_response
+# from image import create_images_google
+# from voiceover import create_voiceover
 from video import create_video
+
+STARTER_MESSAGES_GPT = [
+    {
+        "role": "system",
+        "content": "You are generating voiceover text for youtube shorts, "
+        + "the voiceover must be 20-35 seconds. It must also be sensational in nature",
+    }
+]
+
+google_search_params = {
+    "q": "...",
+    "num": 10,
+    "fileType": "jpg|gif|png",
+    "rights": "cc_publicdomain|cc_attribute|cc_sharealike|cc_noncommercial|cc_nonderived",
+    # "safe": "active",
+    # "imgSize": "large",  # 'huge|icon|large|medium|small|xlarge|xxlarge|imgSizeUndefined', ##
+    # 'imgDominantColor': 'black|blue|brown|gray|green|orange|pink|purple|red|teal|white|yellow|imgDominantColorUndefined',
+    # 'imgColorType': 'color|gray|mono|trans|imgColorTypeUndefined' ##
+    # 'imgType': 'clipart|face|lineart|stock|photo|animated|imgTypeUndefined', ##
+}
+
+BASE_IMAGES_PATH = Path(__file__).parent / "images"
 
 
 class Short:
@@ -50,22 +72,45 @@ class Short:
         self.voiceover_path = None
         self.video_path = None
 
+    def generate_short(self):
+        self._get_text()
+        self._get_images()
+        self._get_voiceover()
+        self._get_video()
+
     def _get_text(self):
-        response = generate_model_response(
-            self.openai_client, self.category, self.topic, self.text_model, self.temperature
+        introduction, prompt = self._get_intro_and_prompt()
+        new_messages = STARTER_MESSAGES_GPT + [{"role": "user", "content": prompt}]
+
+        chat_completion = self.openai_client.chat.completions.create(
+            model=self.text_model, messages=new_messages, temperature=self.temperature
         )
-        self.transcript = response["response"]
-        self.prompt = response["prompt"]
+
+        self.prompt = prompt
+        self.transcript = (
+            introduction + chat_completion.choices[0].message.content + " subscribe for more quotes and facts!!"
+        )
 
     def _get_images(self):
-        self.image_folder = create_images_google(
-            gis=self.google_client, thing=self.topic, num_images=self.num_images, crop=self.crop
-        )
+        path = BASE_IMAGES_PATH / self.topic
+        google_search_params["q"] = self.topic
+        google_search_params["num"] = self.num_images
+
+        if self.crop:
+            self.google_client.search(search_params=google_search_params, path_to_dir=path, width=1080, height=1920)
+        else:
+            self.google_client.search(search_params=google_search_params, path_to_dir=path)
+
+        self.image_folder = path
 
     def _get_voiceover(self):
-        self.voiceover_path = create_voiceover(
-            model=self.voice_model, voice=self.voice, client=self.openai_client, thing=self.topic, text=self.transcript
+        speech_file_path = Path(__file__).parent / "voiceovers" / f"{self.topic}.mp3"
+        response = self.openai_client.audio.speech.create(
+            model=self.voice_model, voice=self.voice, input=self.transcript
         )
+        response.stream_to_file(speech_file_path)
+
+        self.voiceover_path = speech_file_path
 
     def _get_video(self):
         self.video_path = create_video(
@@ -78,8 +123,12 @@ class Short:
             height=self.caption_height,
         )
 
-    def generate_short(self):
-        self._get_text()
-        self._get_images()
-        self._get_voiceover()
-        self._get_video()
+    def _get_intro_and_prompt(self):
+        if self.category == "quote":
+            prompt = f"Generate 3 interesting quotes by {self.topic}:\n"
+            introduction = f"Did you know {self.topic} once said: "
+        elif self.category == "fact":
+            prompt = f"Generate 3 interesting trivia facts about {self.topic}:\n"
+            introduction = f"Did you know these 3 unknown facts about {self.topic}? "
+
+        return introduction, prompt
