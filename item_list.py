@@ -1,24 +1,18 @@
 # random_items = ["balloons", "police officers", "architects", "scientists"]
 fact_items = [
-    # "Cornell University",
-    # "Taylor Swift",
+    # "Olivia Rodrigo",
 ]
 
 quote_people = [
     # "Cristiano Ronaldo",
-    "Drake"
+    # "Drake"
 ]
 
-fiction_books = [
-    # "Harry Potter and the Philosopher's Stone",
-    # "Harry Potter and the Chamber of Secrets",
-    # "Harry Potter and the Prisoner of Azkaban",
-    # "Harry Potter and the Order of the Phoenix",
-    # "Harry Potter and the Half-Blood Prince",
-    # "Harry Potter and the Deathly Hallows",
-    "The Great Gatsby",
-]
+fiction_books = []
 
-nonfiction_books = [
-    # "Atomic Habits",
+nonfiction_books = []
+
+titles = [
+    # "Unknown facts about Zendaya revealed",
+    "The DEEPER MEANING behing TAYLOR SWIFT'S song Willow",
 ]

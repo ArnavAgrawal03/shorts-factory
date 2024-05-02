@@ -66,9 +66,12 @@ def create_slideshow(audio_length, thing, images_path):
             width = height * 9 / 16
             center = image.size[0] // 2
             # if short["category"] == "fact":
-            image = image.crop((center - width // 2, 0, center + width // 2, height)).resize(
-                (1080, 1920), Image.LANCZOS
-            )
+            try:
+                image = image.crop((center - width // 2, 0, center + width // 2, height)).resize(
+                    (1080, 1920), Image.LANCZOS
+                )
+            except OSError:
+                continue
             list_of_images.append(image)
 
     duration = audio_length / len(list_of_images)
@@ -77,8 +80,19 @@ def create_slideshow(audio_length, thing, images_path):
 
 
 def chunk(text, char_limit=20):
-    text, new_text = text.split(), []
-    line, i, current_chars = [], 0, 0
+    new_text, clean_text, line = [], [], []
+    text, current_chars = text.split(), 0
+
+    for i in range(len(text)):
+        if len(text[i]) > char_limit + 1:
+            clean_text.append(text[i][:char_limit])
+            clean_text.append(text[i][char_limit:])
+        else:
+            clean_text.append(text[i])
+
+    text = clean_text
+
+    i = 0
     while i < len(text):
         # shout = random.choice([True, False, False, False, False, False])
         # word = text[i].upper() if shout else text[i]

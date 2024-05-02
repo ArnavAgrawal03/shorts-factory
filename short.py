@@ -16,10 +16,14 @@ STARTER_MESSAGES_GPT = [
     {
         "role": "system",
         "content": "You are generating voiceover text for youtube shorts, "
-        + "the voiceover must be 45-55 seconds. We want to keep viewers locked in as long as possible"
-        + " your response must be a json object. Have the transcript assigned to the key 'transcript'."
+        + "the voiceover must be 45-55 seconds. We want to hook the viewers in the first 5 seconds"
+        + ", ensuring they don't swipe away. We want to have a 100 percent retention which means we should use any filler.",
+    },
+    {
+        "role": "system",
+        "content": "Your response must be a json object. Have the transcript assigned to the key 'transcript'."
         + " have a list of suggested image searches assigned to the key 'image_searches'.",
-    }
+    },
 ]
 
 google_search_params = {
@@ -88,6 +92,7 @@ class Short:
             self._randomize_params()
         print("Generating text")
         self._get_text()
+        print(f"Text: {self.transcript}")
         print("Downloading images")
         self._get_images()
         print("Generating voiceover")
@@ -109,24 +114,37 @@ class Short:
         json_response = json.loads(chat_completion.choices[0].message.content)
 
         self.transcript = (
-            self.introduction + json_response["transcript"] + " like, comment, and subscribe for more such content!!"
+            # self.introduction +
+            json_response["transcript"]
+            # + " like, comment, and subscribe for more such content!!"
         )
 
         self.image_searches = json_response["image_searches"]
 
     def _get_images(self):
         path = BASE_IMAGES_PATH / self.topic
-        num_queries = len(self.image_searches)
-        images_per_query = (self.num_images // num_queries) + 1
 
-        for image_search in self.image_searches:
-            google_search_params["q"] = image_search
-            google_search_params["num"] = images_per_query
+        if self.category == "quote":
+            google_search_params["q"] = self.topic
+            google_search_params["num"] = self.num_images
 
             if self.crop:
                 self.google_client.search(search_params=google_search_params, path_to_dir=path, width=1080, height=1920)
             else:
                 self.google_client.search(search_params=google_search_params, path_to_dir=path)
+        else:
+            num_queries = len(self.image_searches)
+            images_per_query = (self.num_images // num_queries) + 1
+            for image_search in self.image_searches:
+                google_search_params["q"] = image_search
+                google_search_params["num"] = images_per_query
+
+                if self.crop:
+                    self.google_client.search(
+                        search_params=google_search_params, path_to_dir=path, width=1080, height=1920
+                    )
+                else:
+                    self.google_client.search(search_params=google_search_params, path_to_dir=path)
 
         self.image_folder = path
 
@@ -158,10 +176,10 @@ class Short:
         - prompt
         """
         if self.category == "quote":
-            self.prompt = f"Generate 5 interesting quotes by {self.topic}:\n"
+            self.prompt = f"Generate 3 interesting quotes by {self.topic}:"
             self.introduction = f"Did you know {self.topic} once said: "
         elif self.category == "fact":
-            self.prompt = f"Generate 5 interesting trivia facts about {self.topic}:\n"
+            self.prompt = f"Generate interesting trivia facts about {self.topic}:"
             self.introduction = f"Did you know these unknown facts about {self.topic}? "
         elif self.category == "fiction_book":
             self.prompt = f"Summarize the plot of the book {self.topic}:\n"
@@ -169,17 +187,20 @@ class Short:
         elif self.category == "nonfiction_book":
             self.prompt = f"Summarize the key points of the book {self.topic}:\n"
             self.introduction = f"Have you read {self.topic}? Here are the key points it discusses: "
+        elif self.category == "title":
+            self.prompt = f"Create a youtube short titled: f{self.topic}"
+            self.introduction = ""
 
     def _randomize_params(self):
         self.temperature = random.uniform(0.1, 1.0)
-        self.text_model = random.choice(["gpt-4-turbo", "gpt-3.5-turbo"])
+        self.text_model = random.choice(["gpt-4-turbo"])  # "gpt-3.5-turbo",
         self.num_images = random.randint(9, 20)
         self.crop = random.choice([True, False])
         self.voice_model = random.choice(["tts-1", "tts-1-hd"])
         self.voice = random.choice(["alloy", "echo", "fable", "onyx", "nova", "shimmer"])
         self.caption_height = random.uniform(0.3, 0.7)
         self.music_path = str((Path(__file__).parent / "music" / random.choice(["else_paris.mp3"])).resolve())
-        self.caption_length = random.randint(8, 20)
+        self.caption_length = random.randint(10, 20)
 
     def update_metadata(self):
         metadata_file_path = Path(__file__).parent / "metadata.csv"
