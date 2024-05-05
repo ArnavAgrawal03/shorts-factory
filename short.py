@@ -24,6 +24,10 @@ STARTER_MESSAGES_GPT = [
         "content": "Your response must be a json object. Have the transcript assigned to the key 'transcript'."
         + " have a list of suggested image searches assigned to the key 'image_searches'.",
     },
+    # {
+    #     "role": "system",
+    #     "content": "Here is an example transcript that worked well: Did you know Zendaya was a backup dancer for Selena Gomez? Stick around as we dive into some jaw-dropping facts about this superstar! Starting off, Zendaya means 'to give thanks' in the language of Shona. At just 14, she landed her first major role in 'Shake It Up'. But her talents don't stop at acting; she's also a skilled singer and dancer, even producing her own music. Surprisingly, she performed her own stunts in 'Spider-Man: Homecoming'. And here’s a kicker, Zendaya is a vegetarian and an advocate for healthy living. Join us as we uncover more secrets about Zendaya’s incredible journey!",
+    # },
 ]
 
 google_search_params = {
