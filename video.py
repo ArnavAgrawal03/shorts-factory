@@ -8,6 +8,7 @@ import random
 
 
 def create_video(voiceover_path, image_folder_path, music_path, text, video_path, topic, height=0.5, caption_length=20):
+    topic = topic[:20]
     audio_path = str(voiceover_path.resolve())
     images_path = str(image_folder_path.resolve())
     # subtitles = sensationalize(short["response"])

@@ -17,17 +17,10 @@ STARTER_MESSAGES_GPT = [
         "role": "system",
         "content": "You are generating voiceover text for youtube shorts, "
         + "the voiceover must be 45-55 seconds. We want to hook the viewers in the first 5 seconds"
-        + ", ensuring they don't swipe away. We want to have a 100 percent retention which means we should use any filler.",
-    },
-    {
-        "role": "system",
-        "content": "Your response must be a json object. Have the transcript assigned to the key 'transcript'."
+        + ", ensuring they don't swipe away. We want to have a 100 percent retention which means we should use any filler."
+        + "Your response must be a json object. Have the transcript assigned to the key 'transcript'."
         + " have a list of suggested image searches assigned to the key 'image_searches'.",
     },
-    # {
-    #     "role": "system",
-    #     "content": "Here is an example transcript that worked well: Did you know Zendaya was a backup dancer for Selena Gomez? Stick around as we dive into some jaw-dropping facts about this superstar! Starting off, Zendaya means 'to give thanks' in the language of Shona. At just 14, she landed her first major role in 'Shake It Up'. But her talents don't stop at acting; she's also a skilled singer and dancer, even producing her own music. Surprisingly, she performed her own stunts in 'Spider-Man: Homecoming'. And here’s a kicker, Zendaya is a vegetarian and an advocate for healthy living. Join us as we uncover more secrets about Zendaya’s incredible journey!",
-    # },
 ]
 
 google_search_params = {
@@ -126,7 +119,7 @@ class Short:
         self.image_searches = json_response["image_searches"]
 
     def _get_images(self):
-        path = BASE_IMAGES_PATH / self.topic
+        path = BASE_IMAGES_PATH / self.topic[:10]
 
         if self.category == "quote":
             google_search_params["q"] = self.topic
@@ -153,7 +146,7 @@ class Short:
         self.image_folder = path
 
     def _get_voiceover(self):
-        speech_file_path = Path(__file__).parent / "voiceovers" / f"{self.topic}.mp3"
+        speech_file_path = Path(__file__).parent / "voiceovers" / f"{self.topic[:10]}.mp3"
         response = self.openai_client.audio.speech.create(
             model=self.voice_model, voice=self.voice, input=self.transcript
         )
@@ -197,7 +190,7 @@ class Short:
 
     def _randomize_params(self):
         self.temperature = random.uniform(0.1, 1.0)
-        self.text_model = random.choice(["gpt-4-turbo"])  # "gpt-3.5-turbo",
+        self.text_model = random.choice(["gpt-4o"])  # "gpt-3.5-turbo",
         self.num_images = random.randint(9, 20)
         self.crop = random.choice([True, False])
         self.voice_model = random.choice(["tts-1", "tts-1-hd"])
