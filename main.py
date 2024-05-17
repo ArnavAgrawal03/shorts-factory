@@ -3,9 +3,9 @@ import openai
 import os
 from pexels_api import API
 from item_list import fact_items, quote_people, fiction_books, nonfiction_books, titles
-from text import generate_facts, generate_quotes
-from voiceover import create_voiceovers
-from image import create_images
+from old_files.text import generate_facts, generate_quotes
+from old_files.voiceover import create_voiceovers
+from old_files.image import create_images
 from video import create_videos
 from google_images_search import GoogleImagesSearch
 
