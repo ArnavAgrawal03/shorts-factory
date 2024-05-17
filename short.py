@@ -119,7 +119,7 @@ class Short:
         self.image_searches = json_response["image_searches"]
 
     def _get_images(self):
-        path = BASE_IMAGES_PATH / self.topic[:10]
+        path = BASE_IMAGES_PATH / self.topic
 
         if self.category == "quote":
             google_search_params["q"] = self.topic
@@ -146,7 +146,7 @@ class Short:
         self.image_folder = path
 
     def _get_voiceover(self):
-        speech_file_path = Path(__file__).parent / "voiceovers" / f"{self.topic[:10]}.mp3"
+        speech_file_path = Path(__file__).parent / "voiceovers" / f"{self.topic}.mp3"
         response = self.openai_client.audio.speech.create(
             model=self.voice_model, voice=self.voice, input=self.transcript
         )
@@ -189,15 +189,15 @@ class Short:
             self.introduction = ""
 
     def _randomize_params(self):
-        self.temperature = random.uniform(0.1, 1.0)
-        self.text_model = random.choice(["gpt-4o"])  # "gpt-3.5-turbo",
+        self.temperature = random.uniform(0.1, 1.9)
+        self.text_model = random.choice(["gpt-4o", "gpt-4-turbo"])  # "gpt-3.5-turbo",
         self.num_images = random.randint(9, 20)
         self.crop = random.choice([True, False])
         self.voice_model = random.choice(["tts-1", "tts-1-hd"])
         self.voice = random.choice(["alloy", "echo", "fable", "onyx", "nova", "shimmer"])
         self.caption_height = random.uniform(0.3, 0.7)
         self.music_path = str((Path(__file__).parent / "music" / random.choice(["else_paris.mp3"])).resolve())
-        self.caption_length = random.randint(10, 20)
+        self.caption_length = random.randint(14, 20)
 
     def update_metadata(self):
         metadata_file_path = Path(__file__).parent / "metadata.csv"
